@@ -29,6 +29,7 @@
     //
     var field = []; // 盤面（周囲に番兵あり）
     var nowTurn = BLACK; // 現在の番
+    var endGame = false; // ゲームが終了したら true
     var initField = function() {
         // ゼロクリア
         for (var x = 0; x < FIELD_WIDTH + 2; x++) {
@@ -102,6 +103,34 @@
     };
 
     //
+    // 置ける場所が存在するなら true を返す
+    //
+    var hasPuttablePos = function(turn) {
+        for (var x = 1; x <= FIELD_WIDTH; x++) {
+            for (var y = 1; y <= FIELD_HEIGHT; y++) {
+                if (putPiece(x, y, turn)) { return true; }
+            }
+        }
+        return false;
+    };
+
+    //
+    // 先攻後攻の交代後の番を返す
+    //
+    var getChangedTurn = function(nowTurn) {
+        if (hasPuttablePos(3 - nowTurn)) {
+            return 3 - nowTurn; // 次の番へ
+        }
+
+        if (hasPuttablePos(nowTurn)) {
+            return nowTurn; // パス
+        }
+
+        // 両者パス（ゲーム終了）
+        return null;
+    };
+
+    //
     // 盤面を描画する
     //
     var drawField = function() {
@@ -113,11 +142,21 @@
                 var elem = piecePictures[field[x][y]].cloneNode(true);
                 elem.style.left = (x * PIECE_WIDTH  - PIECE_WIDTH)  + "px";
                 elem.style.top  = (y * PIECE_HEIGHT - PIECE_HEIGHT) + "px";
-                if (field[x][y] === BLANK) { // まだ石が置かれていないなら click イベントを追加する
+                if (field[x][y] === BLANK && !endGame) { // まだ石が置かれていないなら click イベントを追加する
                     (function(x, y) {
                         elem.onclick = function() {
                             if (putPiece(x, y, nowTurn, true)) {
-                                nowTurn = 3 - nowTurn;
+                                var changedTurn = getChangedTurn(nowTurn);
+                                if (changedTurn === null) { // ゲーム終了
+                                    endGame = true;
+                                    console.log("ゲーム終了");
+                                } else { // 継続
+                                    if (nowTurn === changedTurn) {
+                                        console.log("パス！");
+                                    }
+                                    nowTurn = changedTurn;
+                                    console.log(((nowTurn === BLACK) ? "黒" : "白") + "の番");
+                                }
                                 drawField();
                             }
                         };
