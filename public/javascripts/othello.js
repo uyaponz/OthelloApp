@@ -42,6 +42,7 @@
         }
 
         // 初期配置
+        // TODO バグあり
         var minCenter = ((FIELD_WIDTH  / 2) | 0);
         var maxCenter = ((FIELD_HEIGHT / 2) | 0) + 1;
         field[minCenter][minCenter] = field[maxCenter][maxCenter] = WHITE;
@@ -142,6 +143,25 @@
     };
 
     //
+    // 石の数をカウントする
+    //
+    // 戻り値 : {1:黒の数, 2:白の数}
+    //
+    var getNumOfPieces = function() {
+        var retval = {};
+        retval[BLACK] = retval[WHITE] = 0;
+
+        for (var x = 1; x <= FIELD_WIDTH; x++) {
+            for (var y = 1; y <= FIELD_HEIGHT; y++) {
+                if      (field[x][y] === BLACK) { retval[BLACK] += 1; }
+                else if (field[x][y] === WHITE) { retval[WHITE] += 1; }
+            }
+        }
+
+        return retval;
+    };
+
+    //
     // 盤面を描画する
     //
     var drawField = function() {
@@ -173,6 +193,8 @@
                                     }
                                     nowTurn = changedTurn;
                                     addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
+                                    var numOfPieces = getNumOfPieces();
+                                    addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
                                 }
                                 drawField();
                             }
@@ -191,6 +213,8 @@
         setElements();
         initField();
         addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
+        var numOfPieces = getNumOfPieces();
+        addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
         drawField();
     };
 })();
