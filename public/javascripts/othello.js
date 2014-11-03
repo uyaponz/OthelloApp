@@ -42,11 +42,12 @@
         }
 
         // 初期配置
-        // TODO バグあり
-        var minCenter = ((FIELD_WIDTH  / 2) | 0);
-        var maxCenter = ((FIELD_HEIGHT / 2) | 0) + 1;
-        field[minCenter][minCenter] = field[maxCenter][maxCenter] = WHITE;
-        field[minCenter][maxCenter] = field[maxCenter][minCenter] = BLACK;
+        var minCenterWidth  = ((FIELD_WIDTH  / 2) | 0);
+        var maxCenterWidth  = ((FIELD_WIDTH  / 2) | 0) + 1;
+        var minCenterHeight = ((FIELD_HEIGHT / 2) | 0);
+        var maxCenterHeight = ((FIELD_HEIGHT / 2) | 0) + 1;
+        field[minCenterWidth][minCenterHeight] = field[maxCenterWidth][maxCenterHeight] = WHITE;
+        field[minCenterWidth][maxCenterHeight] = field[maxCenterWidth][minCenterHeight] = BLACK;
     };
 
     //
