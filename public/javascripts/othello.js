@@ -63,6 +63,15 @@
                 var elem = piecePictures[field[x][y]].cloneNode(true);
                 elem.style.left = (x * PIECE_WIDTH  - PIECE_WIDTH)  + "px";
                 elem.style.top  = (y * PIECE_HEIGHT - PIECE_HEIGHT) + "px";
+                if (field[x][y] === BLANK) { // まだ石が置かれていないなら click イベントを追加する
+                    (function(x, y) {
+                        elem.onclick = function() {
+                            // TODO とりあえず黒を置いている
+                            field[x][y] = BLACK;
+                            drawField();
+                        };
+                    })(x, y);
+                }
                 mainElement.appendChild(elem);
             }
         }
