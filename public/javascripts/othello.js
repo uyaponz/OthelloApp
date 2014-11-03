@@ -53,7 +53,12 @@
     };
 
     //
-    // 盤面に石を置く
+    // 石をひっくり返す
+    //
+    // x, y   : ひっくり返すかどうか判定する対象の盤面座標
+    // dx, dy : 走査の進行方向
+    // turn   : 石の種類（黒 or 白）
+    // put    : 実際に石をひっくり返すなら true にする
     //
     var reversePiece = function(x, y, dx, dy, turn, put) {
         if (field[x][y] === turn)  { return true;  }
@@ -71,7 +76,7 @@
     //
     // x, y : 石を置く盤面座標
     // turn : 石の種類（黒 or 白）
-    // put  : 実際に石を入れ替えるならtrueにする（デフォルト : false）
+    // put  : 実際に石を入れ替えるなら true にする（デフォルト : false）
     //
     var putPiece = function(x, y, turn, put) {
         put = (typeof put === "undefined") ? false : put;
