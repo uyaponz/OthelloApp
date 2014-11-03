@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>Othello</title>
 
     <script type="text/javascript" src="@routes.Assets.at("javascripts/othello.js")"></script>
 </head>
+
 <body>
-Othello
+<div style="position:relative">
+    <div id="blank" style="position:absolute; border:1px solid black; width:49px; height:49px; left:0">
+        <img src="@routes.Assets.at("images/blank.png")" width="49" height="49">
+    </div>
+    <div id="black" style="position:absolute; border:1px solid black; width:49px; height:49px; left:50px">
+        <img src="@routes.Assets.at("images/black.png")" width="49" height="49">
+    </div>
+    <div id="white" style="position:absolute; border:1px solid black; width:49px; height:49px; left:100px">
+        <img src="@routes.Assets.at("images/white.png")" width="49" height="49">
+    </div>
+</div>
 </body>
 </html>
