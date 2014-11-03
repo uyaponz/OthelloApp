@@ -28,6 +28,7 @@
     // --- ゲーム内で使用するデータ ---
     //
     var field = []; // 盤面（周囲に番兵あり）
+    var nowTurn = BLACK; // 現在の番
     var initField = function() {
         // ゼロクリア
         for (var x = 0; x < FIELD_WIDTH + 2; x++) {
@@ -66,8 +67,8 @@
                 if (field[x][y] === BLANK) { // まだ石が置かれていないなら click イベントを追加する
                     (function(x, y) {
                         elem.onclick = function() {
-                            // TODO とりあえず黒を置いている
-                            field[x][y] = BLACK;
+                            field[x][y] = nowTurn;
+                            nowTurn = 3 - nowTurn;
                             drawField();
                         };
                     })(x, y);
