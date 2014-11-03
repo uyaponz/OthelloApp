@@ -14,9 +14,11 @@
     // --- HTML 要素 ---
     //
     var mainElement;
+    var messageElement;
     var piecePictures;
     var setElements = function() {
         mainElement = document.getElementById("main");
+        messageElement = document.getElementById("message");
         piecePictures = [
             document.getElementById("blank"),
             document.getElementById("black"),
@@ -131,11 +133,22 @@
     };
 
     //
+    // メッセージ追加表示
+    //
+    var addMessage = function(message_) {
+        var elem = document.createElement("p");
+        elem.innerHTML = message_;
+        messageElement.appendChild(elem);
+    };
+
+    //
     // 盤面を描画する
     //
     var drawField = function() {
         removeChildren(mainElement);
 
+        mainElement.style.width  = PIECE_WIDTH  * FIELD_WIDTH  + "px";
+        mainElement.style.height = PIECE_HEIGHT * FIELD_HEIGHT + "px";
         for (var x = 1; x <= FIELD_WIDTH; x++) {
             for (var y = 1; y <= FIELD_HEIGHT; y++) {
                 // 要素をコピーして追加する
@@ -146,16 +159,18 @@
                     (function(x, y) {
                         elem.onclick = function() {
                             if (putPiece(x, y, nowTurn, true)) {
+                                removeChildren(messageElement);
+
                                 var changedTurn = getChangedTurn(nowTurn);
                                 if (changedTurn === null) { // ゲーム終了
                                     endGame = true;
-                                    console.log("ゲーム終了");
+                                    addMessage("ゲーム終了");
                                 } else { // 継続
                                     if (nowTurn === changedTurn) {
-                                        console.log("パス！");
+                                        addMessage("パス！");
                                     }
                                     nowTurn = changedTurn;
-                                    console.log(((nowTurn === BLACK) ? "黒" : "白") + "の番");
+                                    addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
                                 }
                                 drawField();
                             }
@@ -173,6 +188,7 @@
     onload = function() {
         setElements();
         initField();
+        addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
         drawField();
     };
 })();
