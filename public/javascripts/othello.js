@@ -58,17 +58,17 @@
     //
     // 石をひっくり返す
     //
-    // x, y   : ひっくり返すかどうか判定する対象の盤面座標
-    // dx, dy : 走査の進行方向
-    // turn   : 石の種類（黒 or 白）
-    // put    : 実際に石をひっくり返すなら true にする
+    // x_, y_   : ひっくり返すかどうか判定する対象の盤面座標
+    // dx_, dy_ : 走査の進行方向
+    // turn_    : 石の種類（黒 or 白）
+    // put_     : 実際に石をひっくり返すなら true にする
     //
-    var reversePiece = function(x, y, dx, dy, turn, put) {
-        if (field[x][y] === turn)  { return true;  }
-        if (field[x][y] === BLANK) { return false; }
+    var reversePiece = function(x_, y_, dx_, dy_, turn_, put_) {
+        if (field[x_][y_] === turn_)  { return true;  }
+        if (field[x_][y_] === BLANK) { return false; }
 
-        var result = reversePiece(x + dx, y + dy, dx, dy, turn, put);
-        if (put && result) { field[x][y] = turn; }
+        var result = reversePiece(x_ + dx_, y_ + dy_, dx_, dy_, turn_, put_);
+        if (put_ && result) { field[x_][y_] = turn_; }
 
         return result;
     };
@@ -77,29 +77,29 @@
     // 盤面に石を置く
     // 置けたときは true を返し、置けなかったときは false を返す
     //
-    // x, y : 石を置く盤面座標
-    // turn : 石の種類（黒 or 白）
-    // put  : 実際に石を入れ替えるなら true にする（デフォルト : false）
+    // x_, y_ : 石を置く盤面座標
+    // turn_  : 石の種類（黒 or 白）
+    // put_   : 実際に石を入れ替えるなら true にする（デフォルト : false）
     //
-    var putPiece = function(x, y, turn, put) {
-        put = (typeof put === "undefined") ? false : put;
+    var putPiece = function(x_, y_, turn_, put_) {
+        put_ = (typeof put_ === "undefined") ? false : put_;
 
         // すでに石が置かれているなら false を返す
-        if (field[x][y] !== BLANK) { return false; }
+        if (field[x_][y_] !== BLANK) { return false; }
 
         // 置けるかどうかチェックする
         var isReversable = false;
         for (var dx = -1; dx <= 1; dx++) {
             for (var dy = -1; dy <= 1; dy++) {
-                if (field[x + dx][y + dy] === (3 - turn)) {
-                    var result = reversePiece(x + (dx * 2), y + (dy * 2), dx, dy, turn, put);
-                    if (put && result) { field[x + dx][y + dy] = turn; }
+                if (field[x_ + dx][y_ + dy] === (3 - turn_)) {
+                    var result = reversePiece(x_ + (dx * 2), y_ + (dy * 2), dx, dy, turn_, put_);
+                    if (put_ && result) { field[x_ + dx][y_ + dy] = turn_; }
                     isReversable |= result;
                 }
             }
         }
 
-        if (put && isReversable) { field[x][y] = turn; }
+        if (put_ && isReversable) { field[x_][y_] = turn_; }
 
         return isReversable;
     };
@@ -107,10 +107,10 @@
     //
     // 置ける場所が存在するなら true を返す
     //
-    var hasPuttablePos = function(turn) {
+    var hasPuttablePos = function(turn_) {
         for (var x = 1; x <= FIELD_WIDTH; x++) {
             for (var y = 1; y <= FIELD_HEIGHT; y++) {
-                if (putPiece(x, y, turn)) { return true; }
+                if (putPiece(x, y, turn_)) { return true; }
             }
         }
         return false;
@@ -119,13 +119,13 @@
     //
     // 先攻後攻の交代後の番を返す
     //
-    var getChangedTurn = function(nowTurn) {
-        if (hasPuttablePos(3 - nowTurn)) {
-            return 3 - nowTurn; // 次の番へ
+    var getChangedTurn = function(nowTurn_) {
+        if (hasPuttablePos(3 - nowTurn_)) {
+            return 3 - nowTurn_; // 次の番へ
         }
 
-        if (hasPuttablePos(nowTurn)) {
-            return nowTurn; // パス
+        if (hasPuttablePos(nowTurn_)) {
+            return nowTurn_; // パス
         }
 
         // 両者パス（ゲーム終了）
@@ -147,8 +147,10 @@
     var drawField = function() {
         removeChildren(mainElement);
 
+        // main 要素の幅・高さを更新する
         mainElement.style.width  = PIECE_WIDTH  * FIELD_WIDTH  + "px";
         mainElement.style.height = PIECE_HEIGHT * FIELD_HEIGHT + "px";
+
         for (var x = 1; x <= FIELD_WIDTH; x++) {
             for (var y = 1; y <= FIELD_HEIGHT; y++) {
                 // 要素をコピーして追加する
