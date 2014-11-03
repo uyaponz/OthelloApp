@@ -50,7 +50,51 @@
     //
     var removeChildren = function(element_) {
         while (element_.firstChild) { element_.removeChild(element_.firstChild); }
-    }
+    };
+
+    //
+    // 盤面に石を置く
+    //
+    var reversePiece = function(x, y, dx, dy, turn, put) {
+        if (field[x][y] === turn)  { return true;  }
+        if (field[x][y] === BLANK) { return false; }
+
+        var result = reversePiece(x + dx, y + dy, dx, dy, turn, put);
+        if (put && result) { field[x][y] = turn; }
+
+        return result;
+    };
+
+    //
+    // 盤面に石を置く
+    // 置けたときは true を返し、置けなかったときは false を返す
+    //
+    // x, y : 石を置く盤面座標
+    // turn : 石の種類（黒 or 白）
+    // put  : 実際に石を入れ替えるならtrueにする（デフォルト : false）
+    //
+    var putPiece = function(x, y, turn, put) {
+        put = (typeof put === "undefined") ? false : put;
+
+        // すでに石が置かれているなら false を返す
+        if (field[x][y] !== BLANK) { return false; }
+
+        // 置けるかどうかチェックする
+        var isReversable = false;
+        for (var dx = -1; dx <= 1; dx++) {
+            for (var dy = -1; dy <= 1; dy++) {
+                if (field[x + dx][y + dy] === (3 - turn)) {
+                    var result = reversePiece(x + (dx * 2), y + (dy * 2), dx, dy, turn, put);
+                    if (put && result) { field[x + dx][y + dy] = turn; }
+                    isReversable |= result;
+                }
+            }
+        }
+
+        if (put && isReversable) { field[x][y] = turn; }
+
+        return isReversable;
+    };
 
     //
     // 盤面を描画する
@@ -67,9 +111,10 @@
                 if (field[x][y] === BLANK) { // まだ石が置かれていないなら click イベントを追加する
                     (function(x, y) {
                         elem.onclick = function() {
-                            field[x][y] = nowTurn;
-                            nowTurn = 3 - nowTurn;
-                            drawField();
+                            if (putPiece(x, y, nowTurn, true)) {
+                                nowTurn = 3 - nowTurn;
+                                drawField();
+                            }
                         };
                     })(x, y);
                 }
