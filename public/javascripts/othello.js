@@ -172,6 +172,19 @@
     };
 
     //
+    // 勝敗メッセージを表示する
+    //
+    var addWinnerMessage = function() {
+        var numOfPieces = getNumOfPieces();
+        addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
+        if (numOfPieces[BLACK] === numOfPieces[WHITE]) {
+            addMessage("引き分け！");
+        } else {
+            addMessage(((numOfPieces[BLACK] > numOfPieces[WHITE]) ? "黒" : "白") + "の勝ち！");
+        }
+    };
+
+    //
     // 盤面を描画する
     //
     var drawField = function() {
@@ -197,6 +210,7 @@
                                 if (changedTurn === null) { // ゲーム終了
                                     endGame = true;
                                     addMessage("ゲーム終了");
+                                    addWinnerMessage();
                                 } else { // 継続
                                     if (nowTurn === changedTurn) {
                                         addMessage("パス！");
