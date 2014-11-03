@@ -163,6 +163,15 @@
     };
 
     //
+    // 現在の番のメッセージを表示する
+    //
+    var addTurnMessage = function() {
+        addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
+        var numOfPieces = getNumOfPieces();
+        addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
+    };
+
+    //
     // 盤面を描画する
     //
     var drawField = function() {
@@ -193,9 +202,7 @@
                                         addMessage("パス！");
                                     }
                                     nowTurn = changedTurn;
-                                    addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
-                                    var numOfPieces = getNumOfPieces();
-                                    addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
+                                    addTurnMessage();
                                 }
                                 drawField();
                             }
@@ -213,9 +220,7 @@
     onload = function() {
         setElements();
         initField();
-        addMessage(((nowTurn === BLACK) ? "黒" : "白") + "の番");
-        var numOfPieces = getNumOfPieces();
-        addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
+        addTurnMessage();
         drawField();
     };
 })();
