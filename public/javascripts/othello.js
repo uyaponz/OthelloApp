@@ -5,10 +5,10 @@
     var BLANK = 0;
     var BLACK = 1;
     var WHITE = 2;
-    var FIELD_WIDTH  = 8;
-    var FIELD_HEIGHT = 8;
-    var PIECE_WIDTH  = 50;
-    var PIECE_HEIGHT = 50;
+    var FIELD_WIDTH  = 8; // 盤面の横マス数
+    var FIELD_HEIGHT = 8; // 盤面の縦マス数
+    var PIECE_WIDTH  = 50; // 石の画像の横幅
+    var PIECE_HEIGHT = 50; // 石の画像の縦幅
 
     //
     // --- HTML 要素 ---
@@ -66,7 +66,7 @@
     // put_     : 実際に石をひっくり返すなら true にする
     //
     var reversePiece = function(x_, y_, dx_, dy_, turn_, put_) {
-        if (field[x_][y_] === turn_)  { return true;  }
+        if (field[x_][y_] === turn_) { return true;  }
         if (field[x_][y_] === BLANK) { return false; }
 
         var result = reversePiece(x_ + dx_, y_ + dy_, dx_, dy_, turn_, put_);
@@ -81,7 +81,7 @@
     //
     // x_, y_ : 石を置く盤面座標
     // turn_  : 石の種類（黒 or 白）
-    // put_   : 実際に石を入れ替えるなら true にする（デフォルト : false）
+    // put_   : 実際に石を置くなら true にする（デフォルト : false）
     //
     var putPiece = function(x_, y_, turn_, put_) {
         put_ = (typeof put_ === "undefined") ? false : put_;
@@ -175,6 +175,7 @@
     // 勝敗メッセージを表示する
     //
     var addWinnerMessage = function() {
+        addMessage("ゲーム終了！");
         var numOfPieces = getNumOfPieces();
         addMessage("黒：" + numOfPieces[BLACK] + "&nbsp;&nbsp;&nbsp;" + "白：" + numOfPieces[WHITE]);
         if (numOfPieces[BLACK] === numOfPieces[WHITE]) {
@@ -198,18 +199,20 @@
             for (var y = 1; y <= FIELD_HEIGHT; y++) {
                 // 要素をコピーして追加する
                 var elem = piecePictures[field[x][y]].cloneNode(true);
-                elem.style.left = (x * PIECE_WIDTH  - PIECE_WIDTH)  + "px";
-                elem.style.top  = (y * PIECE_HEIGHT - PIECE_HEIGHT) + "px";
-                if (field[x][y] === BLANK && !endGame) { // まだ石が置かれていないなら click イベントを追加する
-                    (function(x, y) {
+                elem.style.left = ((x - 1) * PIECE_WIDTH)  + "px";
+                elem.style.top  = ((y - 1) * PIECE_HEIGHT) + "px";
+
+                // まだ石が置かれていない、またはゲームがまだ終了していないならば
+                // click イベントを追加する
+                if (field[x][y] === BLANK && !endGame) {
+                    (function(x_, y_) {
                         elem.onclick = function() {
-                            if (putPiece(x, y, nowTurn, true)) {
+                            if (putPiece(x_, y_, nowTurn, true)) {
                                 removeChildren(messageElement);
 
                                 var changedTurn = getChangedTurn(nowTurn);
                                 if (changedTurn === null) { // ゲーム終了
                                     endGame = true;
-                                    addMessage("ゲーム終了");
                                     addWinnerMessage();
                                 } else { // 継続
                                     if (nowTurn === changedTurn) {
